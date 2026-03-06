@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+
+# Output folder
+output/
+
+# Excel raw data (optional, if you don't want to commit)
+data/
+
+# Any virtual environment folder
+venv/
+.env
+
+# OS files
+.DS_Store
+Thumbs.db

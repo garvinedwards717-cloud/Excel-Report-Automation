@@ -10,7 +10,7 @@ A Python automation tool that processes raw Excel sales data, cleans it using pa
 
 ### Generated Sales Chart
 
-![Sales Chart](screenshots/sales-chart.png)
+![Sales Chart](screenshots/sales_chart.png)
 
 ### Project Structure
 

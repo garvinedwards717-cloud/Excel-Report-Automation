@@ -2,6 +2,20 @@
 
 A Python automation tool that processes raw Excel sales data, cleans it using pandas, and generates summarized reports and charts automatically.
 
+## Demo
+
+### Terminal Output
+
+![Terminal Output](screenshots/terminal-output.png)
+
+### Generated Sales Chart
+
+![Sales Chart](screenshots/sales-chart.png)
+
+### Project Structure
+
+![Project Structure](screenshots/project-structure.png)
+
 ## Features
 
 - Reads raw Excel sales data

@@ -1,55 +1,79 @@
-# main.py
-import pandas as pd
+from pathlib import Path
+
 import matplotlib.pyplot as plt
-import os
+import pandas as pd
 
-# --------------------------
-# File paths
-# --------------------------
-DATA_FILE = "data/sales_data.xlsx"        # Your input Excel file
-OUTPUT_FILE = "output/cleaned_sales_data.xlsx"  # Where cleaned report will go
-CHART_FILE = "output/sales_chart.png"     # Where chart will be saved
 
-# --------------------------
-# 1️⃣ Read Excel
-# --------------------------
-try:
-    df = pd.read_excel(DATA_FILE, engine="openpyxl")
-    print("✅ Raw data loaded successfully from Excel:")
-    print(df)  # <-- Print raw data here
-except FileNotFoundError:
-    print(f"❌ File not found: {DATA_FILE}")
-    exit()
-except Exception as e:
-    print(f"❌ Error loading Excel file: {e}")
-    exit()
+def print_section(title: str) -> None:
+    """Print a formatted section header."""
+    print("\n" + "=" * 60)
+    print(title)
+    print("=" * 60)
 
-# --------------------------
-# 2️⃣ Clean / Aggregate data
-# --------------------------
-# Example: total sales per product
-df_clean = df.groupby("Product", as_index=False)["Sales"].sum()
-print("\n✅ Aggregated / cleaned data:")
-print(df_clean)
 
-# --------------------------
-# 3️⃣ Save cleaned report
-# --------------------------
-os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-df_clean.to_excel(OUTPUT_FILE, index=False)
-print(f"\n✅ Cleaned report saved to: {OUTPUT_FILE}")
+def main() -> None:
+    """Run the Excel report automation workflow."""
+    base_dir = Path(__file__).resolve().parents[1]
+    data_file = base_dir / "data" / "sales_data.xlsx"
+    output_dir = base_dir / "output"
+    output_dir.mkdir(exist_ok=True)
 
-# --------------------------
-# 4️⃣ Create chart
-# --------------------------
-plt.figure(figsize=(8, 5))
-plt.bar(df_clean["Product"], df_clean["Sales"], color="skyblue")
-plt.xlabel("Product")
-plt.ylabel("Total Sales")
-plt.title("Total Sales per Product")
-plt.tight_layout()
+    output_file = output_dir / "cleaned_sales_data.xlsx"
+    chart_file = output_dir / "sales_chart.png"
 
-os.makedirs(os.path.dirname(CHART_FILE), exist_ok=True)
-plt.savefig(CHART_FILE)
-plt.close()
-print(f"✅ Chart saved to: {CHART_FILE}")
+    print_section("EXCEL REPORT AUTOMATION")
+
+    try:
+        df = pd.read_excel(data_file, engine="openpyxl")
+        print("[OK] Raw data loaded from: data/sales_data.xlsx")
+    except FileNotFoundError:
+        print("[ERROR] Input file not found: data/sales_data.xlsx")
+        print("[TIP] Run: python src/create_data.py")
+        return
+    except Exception as error:
+        print(f"[ERROR] Failed to read Excel file: {error}")
+        return
+
+    try:
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df["Sales"] = pd.to_numeric(df["Sales"], errors="coerce")
+        df["Product"] = df["Product"].astype(str).str.strip()
+
+        df = df.dropna(subset=["Date", "Product", "Sales"])
+        df = df.sort_values("Date").reset_index(drop=True)
+
+        print_section("CLEANED SALES DATA PREVIEW")
+        print(df.to_string(index=False))
+
+        df.to_excel(output_file, index=False, engine="openpyxl")
+        print("\n[OK] Cleaned Excel file saved: output/cleaned_sales_data.xlsx")
+    except Exception as error:
+        print(f"[ERROR] Failed during data cleaning or saving: {error}")
+        return
+
+    try:
+        sales_summary = df.groupby("Product", as_index=False)["Sales"].sum()
+
+        print_section("SALES SUMMARY")
+        print(sales_summary.to_string(index=False))
+
+        plt.figure(figsize=(8, 5))
+        plt.bar(sales_summary["Product"], sales_summary["Sales"])
+        plt.title("Sales by Product")
+        plt.xlabel("Product")
+        plt.ylabel("Total Sales")
+        plt.tight_layout()
+        plt.savefig(chart_file)
+        plt.close()
+
+        print("\n[OK] Sales chart saved: output/sales_chart.png")
+    except Exception as error:
+        print(f"[ERROR] Failed to create sales chart: {error}")
+        return
+
+    print_section("PROCESS COMPLETE")
+    print("[OK] Excel automation completed successfully.")
+
+
+if __name__ == "__main__":
+    main()

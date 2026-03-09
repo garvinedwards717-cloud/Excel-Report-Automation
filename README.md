@@ -19,7 +19,7 @@ A Python automation tool that processes raw Excel sales data, cleans it using pa
 ## Features
 
 - Reads raw Excel sales data
-- Cleans and processes the dataset
+- Cleans and processes the data
 - Generates a summarized Excel report
 - Creates a sales chart visualization
 

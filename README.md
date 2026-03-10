@@ -2,6 +2,13 @@
 
 A Python automation tool that processes raw Excel sales data, cleans it using pandas, and generates summarized reports and charts automatically.
 
+## Download
+
+You can download the Windows executable from the **Releases** section.
+
+Current release:
+- **ExcelReportAutomation.exe**
+
 ## Demo
 
 ### Terminal Output

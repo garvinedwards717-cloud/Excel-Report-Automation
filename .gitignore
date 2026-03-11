@@ -1,15 +1,24 @@
+# Virtual environments
+venv/
+.env/
+
 # Python cache
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Output folder
-output/
+# PyInstaller build files
+build/
+dist/
+*.spec
 
-# Excel raw data (optional, if you don't want to commit)
-data/
+# Logs
+logs/
+*.log
 
-# Any virtual environment folder
-venv/
-.env
+# IDE settings
+.vscode/
 
 # OS files
 .DS_Store

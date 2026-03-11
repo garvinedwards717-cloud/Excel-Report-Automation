@@ -5,15 +5,40 @@ import pandas as pd
 
 
 def print_section(title: str) -> None:
-    """Print a formatted section header."""
     print("\n" + "=" * 60)
     print(title)
     print("=" * 60)
 
 
+def create_sample_data(data_file: Path) -> None:
+    data_file.parent.mkdir(parents=True, exist_ok=True)
+
+    sample_data = {
+        "Date": [
+            "2025-01-01",
+            "2025-01-02",
+            "2025-01-03",
+            "2025-01-04",
+            "2025-01-05",
+            "2025-01-06",
+        ],
+        "Product": [
+            "Laptop",
+            "Mouse",
+            "Keyboard",
+            "Laptop",
+            "Monitor",
+            "Mouse",
+        ],
+        "Sales": [1200, 40, 80, 1300, 300, 50],
+    }
+
+    df = pd.DataFrame(sample_data)
+    df.to_excel(data_file, index=False, engine="openpyxl")
+
+
 def main() -> None:
-    """Run the Excel report automation workflow."""
-    base_dir = Path(__file__).resolve().parents[1]
+    base_dir = Path.cwd()
     data_file = base_dir / "data" / "sales_data.xlsx"
     output_dir = base_dir / "output"
     output_dir.mkdir(exist_ok=True)
@@ -23,13 +48,14 @@ def main() -> None:
 
     print_section("EXCEL REPORT AUTOMATION")
 
+    if not data_file.exists():
+        print("[INFO] Input file not found. Creating sample data automatically...")
+        create_sample_data(data_file)
+        print("[OK] Sample Excel file created: data/sales_data.xlsx")
+
     try:
         df = pd.read_excel(data_file, engine="openpyxl")
         print("[OK] Raw data loaded from: data/sales_data.xlsx")
-    except FileNotFoundError:
-        print("[ERROR] Input file not found: data/sales_data.xlsx")
-        print("[TIP] Run: python src/create_data.py")
-        return
     except Exception as error:
         print(f"[ERROR] Failed to read Excel file: {error}")
         return

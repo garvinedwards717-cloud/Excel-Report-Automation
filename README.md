@@ -1,5 +1,7 @@
 # Excel Report Automation
 
+[![Download](https://img.shields.io/badge/Download-Executable-blue)](../../releases)
+
 A Python automation tool that processes raw Excel sales data, cleans it using pandas, and generates summarized reports and charts automatically.
 
 ## Download
